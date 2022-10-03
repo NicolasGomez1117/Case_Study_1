@@ -32,7 +32,8 @@ for i = 1:sizeDiffCNTY_COVID(1,1)
 
 end
 
-
+%%%BAD CHEATING DIVISION CODE%%%
+%{
 D1 = CNTY_COVID(CNTY_CENSUS.DIVISION == 1,:);
 D2 = 1000 + CNTY_COVID(CNTY_CENSUS.DIVISION == 2,:);
 D3 = 2000+  CNTY_COVID(CNTY_CENSUS.DIVISION == 3,:);
@@ -46,7 +47,7 @@ D9 = 8000+ CNTY_COVID(CNTY_CENSUS.DIVISION == 9,:);
 
 divisions = [D1;D2;D3;D4;D5;D6;D7;D8;D9];
 kRegion = cat(2, divisions);
-
+%}
 %{
 for i = 1:sizeD1(1,1)-1
     for j = 1:sizeD1(1,2)-1
@@ -58,12 +59,15 @@ end
 %}
 
 %%%
+smooth = movmean(CNTY_COVID, 3);
+training = smooth(:,1:80);
+testing = smooth(:,81:130);
 
 k = 9;
-[idx, C, ~, D] = kmeans(kRegion,k, 'replicates', 1000);
+[idx, C, ~, D] = kmeans(training,k, 'replicates', 1000);
 
 figure
-silhouette(kRegion, idx)
+silhouette(training, idx)
 
 %{
 figure
